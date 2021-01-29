@@ -1,0 +1,46 @@
+# This file contains the words that were used for building the table
+# of frequencies. It can be also used for further tasks, and for this
+# purpose it can be manually revised, edited, deleted, culled, etc.
+# You can either delete unwanted words, or mark them with "#"
+# -----------------------------------------------------------------------
+
+and
+patient
+with
+presents
+complains
+of
+vomitting
+wheezing
+flu
+shot
+aches
+cough
+headache
+last
+month
+muscle
+received
+stomach
+took
+tylenol
+a
+ago
+ale
+along
+coughing
+ginger
+had
+heating
+limbs
+lower
+months
+on
+pad
+pain
+rash
+red
+upper
+upset
+used
+vomiting

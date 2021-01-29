@@ -1,0 +1,91 @@
+---
+title: "R Notebook Word Clouds"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
+```{r}
+install.packages("tm")
+install.packages("SnowballC")
+install.packages("wordcloud")
+install.packages("RColorBrewer")
+install.packages("RCurl")
+install.packages("XML")
+```
+
+```{r}
+source('http://www.sthda.com/upload/rquery_wordcloud.r')
+filePath <- "http://www.sthda.com/sthda/RDoc/example-files/martin-luther-king-i-have-a-dream-speech.txt"
+res<-rquery.wordcloud(filePath, type ="file", lang = "english")
+```
+```{r}
+res<-rquery.wordcloud(filePath, type ="file", lang = "english",
+                 min.freq = 1,  max.words = 200)
+```
+
+```{r}
+# Reds color palette
+res<-rquery.wordcloud(filePath, type ="file", lang = "english",
+                      colorPalette = "Reds")
+```
+
+```{r}
+# RdBu color palette
+res<-rquery.wordcloud(filePath, type ="file", lang = "english",
+                      colorPalette = "RdBu")
+```
+```{r}
+# use unique color
+res<-rquery.wordcloud(filePath, type ="file", lang = "english",
+                      colorPalette = "black")
+```
+```{r}
+tdm <- res$tdm
+freqTable <- res$freqTable
+```
+
+```{r}
+# Show the top10 words and their frequency
+head(freqTable, 10)
+```
+
+```{r}
+# Bar plot of the frequency for the top10
+barplot(freqTable[1:10,]$freq, las = 2, 
+        names.arg = freqTable[1:10,]$word,
+        col ="lightblue", main ="Most frequent words",
+        ylab = "Word frequencies")
+```
+
+```{r}
+findFreqTerms(tdm, lowfreq = 4)
+```
+
+```{r}
+findAssocs(tdm, terms = "freedom", corlimit = 0.3)
+```
+
+```{r}
+url = "http://www.sthda.com/english/wiki/create-and-format-powerpoint-documents-from-r-software"
+rquery.wordcloud(x=url, type="url")
+```
+
+```{r}
+url = "http://textfiles.com/science/astronau.txt"
+```
+
+```{r}
+rquery.wordcloud(x=url, type="url")
+```
+
+

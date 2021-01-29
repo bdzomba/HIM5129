@@ -1,0 +1,56 @@
+---
+title: "ExampleRMarkdown"
+author: "instructor"
+date: "1/12/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+
+## Including Plots
+
+You can also embed plots, for example:
+
+
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+
+```{r}
+# let's build a map that is interactive
+library(leaflet)
+library(dplyr)
+
+```
+```{r}
+# using leaflet for volcano in New Zealand
+leaflet() %>%
+setView(lng=174.764, lat=-36.877, zoom = 16) %>%
+addTiles() %>%
+addMarkers(lng=174.764, lat=-36.877, popup="Maunga Whau")
+```
+```{r}
+#now let's try Philadelphia City Hall near Temple Center City
+leaflet() %>%
+
+setView(lng=-75.1652, lat=39.9526, zoom = 25) %>%
+addTiles() %>%
+addMarkers(lng=-75.1652, lat=39.9526, popup="Philly")
+```
+```{r}
+# now let us add the lat/long marker for TUCC
+leaflet() %>%
+setView(lng=-75.1652, lat=39.9526, zoom = 25) %>%
+addTiles() %>%
+addMarkers(lng=-75.1660, lat=39.9528, popup="TUCC" )
+```
+

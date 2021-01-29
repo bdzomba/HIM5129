@@ -1,0 +1,158 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
+```{r}
+install.packages("xgboost")
+```
+
+```{r}
+require(xgboost)
+```
+```{r}
+data(agaricus.train, package='xgboost')
+data(agaricus.test, package='xgboost')
+train <- agaricus.train
+test <- agaricus.test
+```
+
+```{r}
+str(train)
+```
+
+```{r}
+dim(train$data)
+```
+
+```{r}
+dim(test$data)
+```
+
+```{r}
+class(train$data)[1]
+```
+
+```{r}
+class(train$label)
+```
+
+```{r}
+bstSparse <- xgboost(data = train$data, label = train$label, max_depth = 2, eta = 1, nthread = 2, nrounds = 2, objective = "binary:logistic")
+```
+
+```{r}
+bstDense <- xgboost(data = as.matrix(train$data), label = train$label, max_depth = 2, eta = 1, nthread = 2, nrounds = 2, objective = "binary:logistic")
+```
+
+```{r}
+dtrain <- xgb.DMatrix(data = train$data, label = train$label)
+bstDMatrix <- xgboost(data = dtrain, max_depth = 2, eta = 1, nthread = 2, nrounds = 2, objective = "binary:logistic")
+```
+
+```{r}
+# verbose = 0, no message
+bst <- xgboost(data = dtrain, max_depth = 2, eta = 1, nthread = 2, nrounds = 2, objective = "binary:logistic", verbose = 0)
+```
+
+```{r}
+# verbose = 1, print evaluation metric
+bst <- xgboost(data = dtrain, max_depth = 2, eta = 1, nthread = 2, nrounds = 2, objective = "binary:logistic", verbose = 1)
+```
+
+```{r}
+# verbose = 2, also print information about tree
+bst <- xgboost(data = dtrain, max_depth = 2, eta = 1, nthread = 2, nrounds = 2, objective = "binary:logistic", verbose = 2)
+```
+
+```{r}
+pred <- predict(bst, test$data)
+
+# size of the prediction vector
+print(length(pred))
+```
+
+```{r}
+# limit display of predictions to the first 10
+print(head(pred))
+```
+
+```{r}
+prediction <- as.numeric(pred > 0.5)
+print(head(prediction))
+```
+
+```{r}
+err <- mean(as.numeric(pred > 0.5) != test$label)
+print(paste("test-error=", err))
+```
+
+```{r}
+dtrain <- xgb.DMatrix(data = train$data, label=train$label)
+dtest <- xgb.DMatrix(data = test$data, label=test$label)
+```
+
+```{r}
+watchlist <- list(train=dtrain, test=dtest)
+
+bst <- xgb.train(data=dtrain, max_depth=2, eta=1, nthread = 2, nrounds=2, watchlist=watchlist, objective = "binary:logistic")
+```
+
+```{r}
+bst <- xgb.train(data=dtrain, max_depth=2, eta=1, nthread = 2, nrounds=2, watchlist=watchlist, eval_metric = "error", eval_metric = "logloss", objective = "binary:logistic")
+```
+
+```{r}
+bst <- xgb.train(data=dtrain, booster = "gblinear", max_depth=2, nthread = 2, nrounds=2, watchlist=watchlist, eval_metric = "error", eval_metric = "logloss", objective = "binary:logistic")
+```
+
+```{r}
+xgb.DMatrix.save(dtrain, "dtrain.buffer")
+```
+
+```{r}
+# to load it in, simply call xgb.DMatrix
+dtrain2 <- xgb.DMatrix("dtrain.buffer")
+```
+
+```{r}
+# to load it in, simply call xgb.DMatrix
+dtrain2 <- xgb.DMatrix("dtrain.buffer")
+```
+
+```{r}
+bst <- xgb.train(data=dtrain2, max_depth=2, eta=1, nthread = 2, nrounds=2, watchlist=watchlist, objective = "binary:logistic")
+```
+
+```{r}
+label = getinfo(dtest, "label")
+pred <- predict(bst, dtest)
+err <- as.numeric(sum(as.integer(pred > 0.5) != label))/length(label)
+print(paste("test-error=", err))
+```
+
+```{r}
+importance_matrix <- xgb.importance(model = bst)
+print(importance_matrix)
+xgb.plot.importance(importance_matrix = importance_matrix)
+```
+```{r}
+xgb.dump(bst, with_stats = TRUE)
+```
+
+```{r}
+install.packages("DiagrammeR")
+xgb.plot.tree(model = bst)
+```
+

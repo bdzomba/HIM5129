@@ -1,0 +1,89 @@
+---
+title: "R Notebook xgboost NHANES survey"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+```{r}
+install.packages("ggplot2")
+install.packages("readr")
+install.packages("data.table")
+install.packages("dplyr")
+install.packages("xgboost")
+install.packages("caret")
+install.packages("pROC")
+```
+```{r}
+library(ggplot2)
+library(readr)
+library(data.table)
+library(dplyr)
+library(xgboost)
+library(caret)
+library(pROC)
+```
+```{r}
+medications <- fread('medications.csv')
+labs <- fread('labs.csv')
+
+```
+
+```{r}
+diabetes <- medications %>%
+  mutate(
+    is_diabetic = ifelse(RXDRSC1 == 'E11', 1, 0)
+  ) %>%
+  select(
+    SEQN,
+    is_diabetic
+  ) %>%
+  unique() %>%
+  left_join(labs)
+
+outcome <- c('is_diabetic')
+```
+```{r}
+predictors <- names(diabetes)[!names(diabetes) %in% outcome]
+```
+
+```{r}
+mx.diabetes <- as.matrix(diabetes, rownames.force = NA)
+train_dmatrix <- xgb.DMatrix(data = mx.diabetes[, predictors], label = mx.diabetes[, outcome])
+
+fit.xgb <- xgboost(
+  data = train_dmatrix,
+  nrounds = 10,
+  objective = "binary:logistic"
+)
+```
+
+```{r}
+predictions <- predict(fit.xgb, as.matrix(diabetes[, ..predictors]))
+
+                       
+mean(as.numeric(predictions > 0.5) != diabetes[, ..outcome])
+
+
+
+ 
+
+plot.roc(
+  (predictions > 0.5),
+  diabetes[, is_diabetic],
+  main = "Confidence intervals",
+  percent = TRUE,
+  ci = TRUE,
+  print.auc=TRUE
+)
+
+```
+

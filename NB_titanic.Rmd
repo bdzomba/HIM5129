@@ -1,0 +1,96 @@
+---
+title: "Naive Bayes"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
+
+
+```{r}
+#Getting started with Naive Bayes
+#Install the package
+#install.packages(“e1071”)
+#Loading the library
+library(e1071)
+?naiveBayes #The documentation also contains an example implementation of Titanic dataset
+#Next load the Titanic dataset
+```
+
+```{r}
+data(Titanic)
+```
+
+```{r}
+#Save into a data frame and view it
+Titanic_df=as.data.frame(Titanic)
+```
+
+```{r}
+#Creating data from table
+repeating_sequence=rep.int(seq_len(nrow(Titanic_df)), Titanic_df$Freq) #This will repeat each combination equal to the frequency of each combination
+#Create the dataset by row repetition created
+Titanic_dataset=Titanic_df[repeating_sequence,]
+#We no longer need the frequency, drop the feature
+Titanic_dataset$Freq=NULL
+```
+
+```{r}
+#Fitting the Naive Bayes model
+Naive_Bayes_Model=naiveBayes(Survived ~., data=Titanic_dataset)
+#What does the model say? Print the model summary
+Naive_Bayes_Model
+```
+```{r}
+#Prediction on the dataset
+NB_Predictions=predict(Naive_Bayes_Model,Titanic_dataset)
+#Confusion matrix to check accuracy
+table(NB_Predictions,Titanic_dataset$Survived)
+
+```
+
+```{r}
+#Getting started with Naive Bayes in mlr
+#Install the package
+install.packages(“mlr”)
+
+```
+
+
+```{r}
+#Loading the library
+library(mlr)
+```
+```{r}
+#Create a classification task for learning on Titanic Dataset and specify the target feature
+task = makeClassifTask(data = Titanic_dataset, target = "Survived")
+#Initialize the Naive Bayes classifier
+selected_model = makeLearner("classif.naiveBayes")
+#Train the model
+NB_mlr = train(selected_model, task)
+```
+
+
+```{r}
+#Read the model learned  
+NB_mlr$learner.model
+  
+ 
+```
+
+```{r}
+#Predict on the dataset without passing the target feature
+predictions_mlr = as.data.frame(predict(NB_mlr, newdata = Titanic_dataset[,1:3]))
+##Confusion matrix to check accuracy
+table(predictions_mlr[,1],Titanic_dataset$Survived)
+```
+

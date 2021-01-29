@@ -1,0 +1,60 @@
+HISTORY: Describe the history you just obtained from this patient. Include only information (pertinent positives and negatives)
+relevant to this patient’s problem(s).
+Ms. Bingham is a 24 yo woman who complains of worsening sore throat since yesterday
+morning. She has never had a similar problem in the past. She has no difficulty
+swallowing, but notes that swallowing makes the pain worse. Nothing makes it better.
+There is no SOB or sensation of choking or dysphagia. She has fatigue and has had some
+anorexia since the symptoms began. She has had some subjective fevers at home but has not
+taken her temperature. She has had no cough or rhinorrhea. There are no sick contacts at
+home or at work. She denies seasonal allergies and post-nasal drip.
+ROS: No chest pain, cough, wheezing, abdominal pain, N/V, headache
+PMHx: none
+Meds: none; Allergies: none
+PSHx: none
+FHx: father with HTN
+SHx: married with 2 children, No ETOH or drugs, monogamous with husband
+PHYSICAL EXAMINATION: Describe any positive and negative findings relevant to this patient’s problem(s). Be careful to include only
+those parts of examination you performed in this encounter.
+She is in no acute distress, throat clear, abdomen soft, nontender and without
+distension. There is no notable splenic or hepatic enlargement or tenderness.
+DATA INTERPRETATION: Based on what you have learned from the history and physical examination, list up to 3 diagnoses that might
+explain this patient’s complaint(s). List your diagnoses from most to least likely. For some cases, fewer than 3 diagnoses will be
+appropriate. Then, enter the positive or negative findings from the history and the physical examination (if present) that support
+each diagnosis. Lastly, list initial diagnostic studies (if any) you would order for each listed diagnosis (e.g. restricted physical exam
+maneuvers, laboratory tests, imaging, ECG, etc.).
+DIAGNOSIS #1: Viral Pharyngitis
+HISTORY FINDING(S) PHYSICAL EXAM FINDING(S)
+Sore throat Tender submandibular lymph nodes
+Subjective fever
+Fatigue
+Anorexia
+Pain with swallowing
+
+DIAGNOSIS #2: Bacterial Pharyngitis/Retropharyngeal Abscess
+HISTORY FINDING(S) PHYSICAL EXAM FINDING(S)
+Appropriate supporting
+information is drawn from
+the history and PE section
+above and used to support a
+likely diagnosis
+Including a diagnosis without supporting
+information would result in a lower score even if
+the diagnosis is likely. Including two diagnoses on
+the same line would result in a lower score.
+The physical exam includes a cursory examination of the
+throat. A higher level of detail such as specific mention of
+erythema or exudate, and evaluation for regional
+lymphadenopathy would result in a higher score.
+Copyright ©2014-16 by the National Board of Medical Examiners (NBME
+) and the Educational Commission for Foreign Medical Graduates
+(ECFMG
+).
+DIAGNOSIS #3:
+HISTORY FINDING(S) PHYSICAL EXAM FINDING(S)
+
+DIAGNOSTIC STUDIES
+Throat Culture
+Head/neck CT with Contrast
+“Head/neck CT with contrast” is
+overly aggressive and costly in this
+clinical scenario, and would result

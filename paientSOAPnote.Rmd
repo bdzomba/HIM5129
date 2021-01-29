@@ -1,0 +1,91 @@
+---
+title: "R Notebook patient SOAP note mining"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
+```{r}
+install.packages("corpus")
+install.packages("tm")
+install.packages("snowballC")
+install.packages("wordcloud")
+install.packages("rquery")
+install.packages("Xml")
+```
+```{r}
+text <- readLines(file.choose())
+```
+
+```{r}
+docs <- Corpus(VectorSource(text))
+View(docs) 
+```
+
+```{r}
+inspect(docs)
+```
+```{r}
+toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+docs <- tm_map(docs, toSpace, "/")
+docs <- tm_map(docs, toSpace, "@")
+```
+```{r}
+docs <- tm_map(docs, toSpace, "\\|")
+```
+
+```{r}
+# Convert the text to lower case
+ docs <- tm_map(docs, content_transformer(tolower))
+```
+
+```{r}
+# Remove numbers
+docs <- tm_map(docs, removeNumbers)
+```
+
+```{r}
+# Remove english common stopwords
+docs <- tm_map(docs, removeWords, stopwords("english"))
+```
+
+```{r}
+# Remove your own stop word
+# specify your stopwords as a character vector -- change blah blah blah to real words you want removed
+docs <- tm_map(docs, removeWords, c("blabla1", "blabla2"))
+```
+```{r}
+# Remove punctuations
+docs <- tm_map(docs, removePunctuation)
+```
+
+```{r}
+# Eliminate extra white spaces
+docs <- tm_map(docs, stripWhitespace)
+```
+
+```{r}
+# Text stemming
+ # docs <- tm_map(docs, stemDocument)
+ dtm <- TermDocumentMatrix(docs)
+ m <- as.matrix(dtm)
+v <- sort(rowSums(m),decreasing=TRUE)
+d <- data.frame(word = names(v),freq=v)
+ head(d, 10)
+```
+```{r}
+set.seed(1234)
+ wordcloud(words = d$word, freq = d$freq, min.freq = 1,
+ max.words=200, random.order=FALSE, rot.per=0.35,
+ colors=brewer.pal(8, "Dark2"))
+```
+

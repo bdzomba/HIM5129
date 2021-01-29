@@ -1,0 +1,231 @@
+---
+title: "R Notebook PCA"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
+```{r}
+# PCA with function prcomp
+pca1 = prcomp(USArrests, scale. = TRUE)
+
+```
+
+```{r}
+# sqrt of eigenvalues
+pca1$sdev
+## [1] 1.5749 0.9949 0.5971 0.4164
+
+```
+
+```{r}
+# loadings
+head(pca1$rotation)
+##              PC1     PC2     PC3      PC4
+## Murder   -0.5359  0.4182 -0.3412  0.64923
+## Assault  -0.5832  0.1880 -0.2681 -0.74341
+## UrbanPop -0.2782 -0.8728 -0.3780  0.13388
+## Rape     -0.5434 -0.1673  0.8178  0.08902
+
+```
+
+```{r}
+head(pca1$x)
+##                PC1     PC2      PC3      PC4
+## Alabama    -0.9757  1.1220 -0.43980  0.15470
+## Alaska     -1.9305  1.0624  2.01950 -0.43418
+## Arizona    -1.7454 -0.7385  0.05423 -0.82626
+## Arkansas    0.1400  1.1085  0.11342 -0.18097
+## California -2.4986 -1.5274  0.59254 -0.33856
+## Colorado   -1.4993 -0.9776  1.08400  0.00145
+
+```
+
+```{r}
+# PCA with function princomp
+pca2 = princomp(USArrests, cor = TRUE)
+
+```
+
+```{r}
+# sqrt of eigenvalues
+pca2$sdev
+
+```
+
+```{r}
+# loadings
+unclass(pca2$loadings)
+
+```
+
+```{r}
+# PCs (aka scores)
+head(pca2$scores)
+
+```
+
+```{r}
+# PCA with function PCA
+install.packages("FactoMineR")
+library(FactoMineR)
+
+```
+```{r}
+# apply PCA
+pca3 = PCA(USArrests, graph = FALSE)
+
+```
+
+```{r}
+# matrix with eigenvalues
+pca3$eig
+
+```
+
+```{r}
+# correlations between variables and PCs
+pca3$var$coord
+
+```
+
+```{r}
+head(pca3$ind$coord)
+```
+
+```{r}
+# PCA with function dudi.pca
+install.packages("ade4")
+library(ade4)
+
+```
+
+```{r}
+# apply PCA
+pca4 = dudi.pca(USArrests, nf = 5, scannf = FALSE)
+
+```
+
+```{r}
+# eigenvalues
+pca4$eig
+
+```
+
+```{r}
+# loadings
+pca4$c1
+
+```
+
+```{r}
+# correlations between variables and PCs
+pca4$co
+
+```
+
+```{r}
+# PCs
+head(pca4$li)
+
+```
+
+```{r}
+# PCA with function acp
+install.packages("amap")
+library(amap)
+
+```
+
+```{r}
+# apply PCA
+pca5 = acp(USArrests)
+
+```
+
+```{r}
+# sqrt of eigenvalues
+pca5$sdev
+
+```
+
+```{r}
+# sqrt of eigenvalues
+pca5$sdev
+
+```
+
+```{r}
+# scores
+head(pca5$scores)
+
+```
+
+```{r}
+# load ggplot2
+install.packages("ggplot2")
+library(ggplot2)
+
+```
+```{r}
+# create data frame with scores
+scores = as.data.frame(pca1$x)
+
+```
+
+```{r}
+# plot of observations
+ggplot(data = scores, aes(x = PC1, y = PC2, label = rownames(scores))) +
+  geom_hline(yintercept = 0, colour = "gray65") +
+  geom_vline(xintercept = 0, colour = "gray65") +
+  geom_text(colour = "tomato", alpha = 0.8, size = 4) +
+  ggtitle("PCA plot of USA States - Crime Rates")
+
+```
+
+```{r}
+# function to create a circle
+circle <- function(center = c(0, 0), npoints = 100) {
+    r = 1
+    tt = seq(0, 2 * pi, length = npoints)
+    xx = center[1] + r * cos(tt)
+    yy = center[1] + r * sin(tt)
+    return(data.frame(x = xx, y = yy))
+}
+corcir = circle(c(0, 0), npoints = 100)
+
+```
+
+```{r}
+# create data frame with correlations between variables and PCs
+correlations = as.data.frame(cor(USArrests, pca1$x))
+
+```
+
+```{r}
+# data frame with arrows coordinates
+arrows = data.frame(x1 = c(0, 0, 0, 0), y1 = c(0, 0, 0, 0), x2 = correlations$PC1, 
+    y2 = correlations$PC2)
+
+```
+
+```{r}
+# geom_path will do open circles
+ggplot() + geom_path(data = corcir, aes(x = x, y = y), colour = "gray65") + 
+    geom_segment(data = arrows, aes(x = x1, y = y1, xend = x2, yend = y2), colour = "gray65") + 
+    geom_text(data = correlations, aes(x = PC1, y = PC2, label = rownames(correlations))) + 
+    geom_hline(yintercept = 0, colour = "gray65") + geom_vline(xintercept = 0, 
+    colour = "gray65") + xlim(-1.1, 1.1) + ylim(-1.1, 1.1) + labs(x = "pc1 aixs", 
+    y = "pc2 axis") + ggtitle("Circle of correlations")
+
+```
+
